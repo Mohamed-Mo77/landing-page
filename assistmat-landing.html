@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistMat — Bulletins de salaire pour assistantes maternelles</title>
+<meta name="description" content="Gérez vos bulletins de salaire, suivez les présences et préparez votre déclaration fiscale. AssistMat, l'outil pensé pour les assistantes maternelles agréées. 14 jours d'essai gratuit.">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cr:#FDF7F2;--cr2:#F7EDE4;--cr3:#EFE2D7;--bd:#E4D5C8;
+  --te:#C05C35;--te2:#A34828;--tel:#FBF0EB;--tem:#EDCABC;
+  --sa:#3A7A55;--sal:#EAF4EE;--sam:#B8D9C6;
+  --go:#A87020;--gol:#FDF2E3;--gom:#EDCF98;
+  --lv:#6B4DB0;--lvl:#EEE8F8;
+  --tx:#2D1A0E;--tx2:#7A5E4A;--tx3:#B09A8A;--wh:#FFFFFF;
+  --sh:0 1px 3px rgba(45,26,14,.06),0 4px 16px rgba(45,26,14,.05);
+  --sh2:0 4px 24px rgba(45,26,14,.08),0 20px 48px rgba(45,26,14,.06);
+  --max:1160px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;color:var(--tx);background:var(--cr);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:'Outfit',sans-serif;cursor:pointer}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,247,242,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);transition:box-shadow .2s}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:var(--te);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logo-name{font-family:'Lora',serif;font-size:18px;font-weight:500;color:var(--tx)}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:14px;font-weight:500;color:var(--tx2);transition:color .15s}
+.nav-links a:hover{color:var(--te)}
+.nav-cta{background:var(--te);color:#fff!important;border-radius:100px;padding:9px 20px;font-weight:600;font-size:14px;box-shadow:0 2px 12px rgba(192,92,53,.22);transition:background .15s,transform .1s}
+.nav-cta:hover{background:var(--te2);transform:translateY(-1px)}
+@media(max-width:768px){.nav-links{display:none}}
+
+/* HERO */
+.hero{min-height:100svh;padding-top:64px;display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden}
+.hero-text{padding:80px 48px 80px 0}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:var(--tel);border:1px solid var(--tem);border-radius:100px;padding:5px 14px 5px 10px;font-size:12px;font-weight:600;color:var(--te);margin-bottom:24px}
+.hero-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--te);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+.hero h1{font-family:'Lora',serif;font-size:clamp(34px,4.5vw,56px);font-weight:500;color:var(--tx);line-height:1.1;letter-spacing:-.5px;margin-bottom:22px}
+.hero h1 em{font-style:italic;color:var(--te)}
+.hero-desc{font-size:17px;color:var(--tx2);line-height:1.65;max-width:460px;margin-bottom:36px}
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--te);color:#fff;border:none;border-radius:14px;padding:15px 26px;font-size:15px;font-weight:600;box-shadow:0 4px 20px rgba(192,92,53,.28);transition:background .15s,transform .12s,box-shadow .15s}
+.btn-primary:hover{background:var(--te2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,92,53,.32)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:var(--wh);color:var(--tx);border:1px solid var(--bd);border-radius:14px;padding:14px 24px;font-size:15px;font-weight:500;transition:border-color .15s,box-shadow .15s}
+.btn-secondary:hover{border-color:var(--te);box-shadow:0 4px 16px rgba(45,26,14,.08)}
+.hero-note{margin-top:18px;font-size:12px;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.hero-visual{position:relative;height:100%;min-height:600px;background:linear-gradient(135deg,var(--cr2) 0%,var(--cr3) 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(192,92,53,.08) 0%,transparent 60%)}
+.phone-frame{width:256px;background:var(--wh);border-radius:32px;box-shadow:0 32px 80px rgba(45,26,14,.18),0 8px 24px rgba(45,26,14,.1);overflow:hidden;position:relative;z-index:2;animation:float 6s ease-in-out infinite;border:6px solid var(--wh);outline:1px solid var(--bd)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.phone-notch{height:26px;background:var(--tx);display:flex;align-items:center;justify-content:center}
+.phone-notch-bar{width:60px;height:4px;background:rgba(255,255,255,.2);border-radius:3px}
+.phone-hdr{background:var(--cr2);padding:11px 13px 9px;border-bottom:1px solid var(--bd)}
+.phone-hdr-title{font-family:'Lora',serif;font-size:15px;color:var(--tx);font-weight:500}
+.phone-hdr-sub{font-size:9px;color:var(--tx3)}
+.phone-body{padding:10px;background:var(--cr)}
+.phone-today{background:var(--tel);border:1px solid var(--tem);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.phone-today-label{font-size:8px;font-weight:700;color:var(--te);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.phone-today-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--tx2);padding:3px 0;border-bottom:.5px solid var(--tem)}
+.phone-today-row:last-child{border-bottom:none}
+.phone-badge{font-size:8px;padding:2px 6px;border-radius:100px;font-weight:600}
+.pb-sa{background:var(--sal);color:var(--sa)}.pb-gr{background:var(--cr3);color:var(--tx3)}
+.phone-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.phone-stat{background:var(--wh);border:.5px solid var(--bd);border-radius:8px;padding:7px 8px}
+.phone-stat.te{background:var(--tel);border-color:var(--tem)}
+.phone-stat.sa{background:var(--sal);border-color:var(--sam)}
+.phone-stat-l{font-size:7px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.phone-stat-v{font-size:13px;font-weight:700;color:var(--tx)}
+.phone-stat.te .phone-stat-v{color:var(--te)}.phone-stat.sa .phone-stat-v{color:var(--sa)}
+.phone-card{background:var(--wh);border:.5px solid var(--bd);border-radius:10px;padding:8px 10px;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.phone-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.pav-te{background:var(--tel);color:var(--te)}.pav-sa{background:var(--sal);color:var(--sa)}
+.phone-card-name{font-size:10px;font-weight:600;color:var(--tx)}
+.phone-card-sub{font-size:8px;color:var(--tx3);margin-top:1px}
+.phone-nav{background:var(--cr2);border-top:1px solid var(--bd);display:flex;padding:6px 0 8px}
+.phone-ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:6px;color:var(--tx3);font-weight:500}
+.phone-ni.on{color:var(--te);font-weight:700}
+.phone-ni-dot{width:12px;height:12px;background:var(--cr3);border-radius:3px}
+.phone-ni.on .phone-ni-dot{background:var(--tel)}
+.float-card{position:absolute;background:var(--wh);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;box-shadow:var(--sh2);z-index:3;animation:float 6s ease-in-out infinite}
+.float-card:nth-child(2){animation-delay:-2s}.float-card:nth-child(3){animation-delay:-4s}
+.fc-left{left:20px;top:30%;width:138px}.fc-right{right:16px;bottom:25%;width:145px}
+.fc-label{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.fc-value{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.5px}
+.fc-sub{font-size:10px;color:var(--tx3);margin-top:2px}
+.fc-pill{display:inline-block;font-size:9px;padding:2px 8px;border-radius:100px;font-weight:600;margin-top:6px}
+@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:80px}.hero-text{padding:60px 0 40px}.hero-visual{min-height:440px;border-radius:24px;margin-bottom:60px}.fc-left,.fc-right{display:none}}
+
+/* STATS BAND */
+.stats-band{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--wh);padding:32px 0}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-item{padding:0 32px;border-right:1px solid var(--bd)}
+.stat-item:first-child{padding-left:0}.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Lora',serif;font-size:30px;font-weight:500;color:var(--te);letter-spacing:-.5px;line-height:1;margin-bottom:5px}
+.stat-label{font-size:13px;color:var(--tx2);line-height:1.4}
+@media(max-width:640px){.stats-inner{grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}.stat-item{background:var(--wh);border-right:none;padding:20px 18px}}
+
+/* SECTION HEADERS */
+.section-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--te);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px}
+.section-tag::before{content:'';width:16px;height:2px;background:var(--te);border-radius:1px;flex-shrink:0}
+.section-title{font-family:'Lora',serif;font-size:clamp(26px,3.5vw,42px);font-weight:500;color:var(--tx);line-height:1.15;letter-spacing:-.4px;margin-bottom:14px;max-width:560px}
+.section-desc{font-size:16px;color:var(--tx2);line-height:1.65;max-width:520px;margin-bottom:52px}
+
+/* FEATURES BENTO */
+.features{padding:110px 0}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.bento-card{background:var(--wh);border:1px solid var(--bd);border-radius:20px;padding:26px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s}
+.bento-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.bento-card.wide{grid-column:span 2}
+.bento-card.warm{background:var(--tel);border-color:var(--tem)}
+.bento-card.sage{background:var(--sal);border-color:var(--sam)}
+.bento-card.gold{background:var(--gol);border-color:var(--gom)}
+.bento-card.accent{background:var(--te);border-color:var(--te)}
+.bento-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.bi-te{background:var(--tel);color:var(--te)}.bi-sa{background:var(--sal);color:var(--sa)}.bi-go{background:var(--gol);color:var(--go)}.bi-lv{background:var(--lvl);color:var(--lv)}.bi-wh{background:rgba(255,255,255,.2);color:#fff}
+.bento-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);margin-bottom:8px}
+.bento-card.warm .bento-label{color:var(--te)}.bento-card.sage .bento-label{color:var(--sa)}.bento-card.gold .bento-label{color:var(--go)}.bento-card.accent .bento-label{color:rgba(255,255,255,.6)}
+.bento-h{font-size:17px;font-weight:600;color:var(--tx);letter-spacing:-.2px;margin-bottom:8px;line-height:1.25}
+.bento-card.warm .bento-h{color:var(--te)}.bento-card.sage .bento-h{color:var(--sa)}.bento-card.gold .bento-h{color:var(--go)}.bento-card.accent .bento-h{color:#fff}
+.bento-p{font-size:14px;color:var(--tx2);line-height:1.6}
+.bento-card.warm .bento-p{color:#8A4030}.bento-card.sage .bento-p{color:#3A6040}.bento-card.gold .bento-p{color:#7A5010}.bento-card.accent .bento-p{color:rgba(255,255,255,.8)}
+.mini-bul{margin-top:16px;background:var(--cr2);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.mini-bul-row{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;border-bottom:1px solid var(--cr3)}
+.mini-bul-row:last-child{border-bottom:none}
+.mini-bul-label{color:var(--tx2)}.mini-bul-val{font-weight:600;color:var(--tx)}.mini-bul-val.sa{color:var(--sa)}
+.mini-bul-total{background:var(--te);color:#fff;display:flex;justify-content:space-between;padding:10px 12px;font-size:13px;font-weight:600}
+.mini-cal{margin-top:14px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:var(--tx3);background:var(--cr2)}
+.cal-day.worked{background:var(--sal);color:var(--sa);font-weight:700}
+.cal-day.absent{background:var(--gol);color:var(--go)}
+.cal-day.today{background:var(--te);color:#fff;font-weight:700}
+.cal-day.empty,.cal-day.header{background:none}
+.cal-day.header{font-size:7px;font-weight:700;text-transform:uppercase;color:var(--tx3)}
+.mini-tax{margin-top:14px}
+.tax-bar-wrap{margin-bottom:9px}
+.tax-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--tx2);margin-bottom:4px;font-weight:500}
+.tax-bar-label span:last-child{color:var(--sa);font-weight:600}
+.tax-bar-bg{height:7px;background:var(--cr3);border-radius:100px;overflow:hidden}
+.tax-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--sa),var(--sam));transition:width 1.2s ease}
+@media(max-width:900px){.bento{grid-template-columns:1fr 1fr}.bento-card.wide{grid-column:span 2}}
+@media(max-width:560px){.bento{grid-template-columns:1fr}.bento-card.wide{grid-column:span 1}}
+
+/* HOW IT WORKS */
+.how{padding:100px 0;background:var(--wh);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;position:relative;margin-top:56px}
+.steps::before{content:'';position:absolute;top:26px;left:calc(16.7% + 12px);right:calc(16.7% + 12px);height:1px;background:var(--bd)}
+.step{position:relative;z-index:1}
+.step-num{width:52px;height:52px;border-radius:50%;background:var(--wh);border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:18px;font-weight:500;color:var(--te);margin-bottom:20px}
+.step:first-child .step-num{background:var(--te);border-color:var(--te);color:#fff}
+.step-h{font-size:16px;font-weight:600;color:var(--tx);margin-bottom:10px;letter-spacing:-.1px}
+.step-p{font-size:14px;color:var(--tx2);line-height:1.7}
+@media(max-width:640px){.steps{grid-template-columns:1fr;gap:28px}.steps::before{display:none}}
+
+/* TESTIMONIALS */
+.testimonials{padding:100px 0}
+.testi-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:52px}
+.testi{background:var(--wh);border:1px solid var(--bd);border-radius:20px;padding:26px;box-shadow:var(--sh);transition:box-shadow .2s}
+.testi:first-child{grid-column:span 2;background:var(--tel);border-color:var(--tem)}
+.testi:hover{box-shadow:var(--sh2)}
+.testi-stars{display:flex;gap:3px;margin-bottom:14px}
+.star{width:13px;height:13px;background:var(--te);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.testi-quote{font-size:14px;color:var(--tx);line-height:1.65;margin-bottom:18px}
+.testi:first-child .testi-quote{font-size:16px}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.testi-name{font-size:13px;font-weight:600;color:var(--tx)}
+.testi-role{font-size:11px;color:var(--tx3);margin-top:1px}
+@media(max-width:640px){.testi-grid{grid-template-columns:1fr}.testi:first-child{grid-column:span 1}}
+
+/* PRICING */
+.pricing{padding:110px 0;background:var(--cr2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.pricing-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.pricing-card{background:var(--wh);border:1px solid var(--bd);border-radius:24px;padding:36px;box-shadow:var(--sh2);position:relative;overflow:hidden}
+.pricing-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:var(--tel);pointer-events:none}
+.pricing-badge{display:inline-flex;align-items:center;gap:6px;background:var(--tel);border:1px solid var(--tem);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--te);margin-bottom:20px;position:relative}
+.pricing-price{display:flex;align-items:baseline;gap:4px;margin-bottom:6px}
+.pricing-amount{font-family:'Lora',serif;font-size:48px;font-weight:500;color:var(--tx);letter-spacing:-.5px}
+.pricing-period{font-size:16px;color:var(--tx2)}
+.pricing-trial{font-size:13px;color:var(--tx3);margin-bottom:28px}
+.pricing-trial strong{color:var(--te)}
+.pricing-features{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.pricing-feature{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--tx2)}
+.pricing-feature::before{content:'';width:18px;height:18px;border-radius:50%;background:var(--sal);border:1px solid var(--sam);flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4l2.5 2.5L9 1' stroke='%233A7A55' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
+.pricing-cta{display:block;width:100%;background:var(--te);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;text-align:center;font-family:'Outfit',sans-serif;box-shadow:0 4px 20px rgba(192,92,53,.25);transition:background .15s,transform .12s}
+.pricing-cta:hover{background:var(--te2);transform:translateY(-1px)}
+.pricing-note{font-size:11px;color:var(--tx3);text-align:center;margin-top:12px}
+.pricing-text h2{font-family:'Lora',serif;font-size:clamp(26px,3vw,38px);font-weight:500;color:var(--tx);letter-spacing:-.4px;margin-bottom:20px;line-height:1.2}
+.pricing-text p{font-size:15px;color:var(--tx2);line-height:1.7;margin-bottom:16px}
+.pricing-guarantee{display:flex;align-items:flex-start;gap:12px;background:var(--sal);border:1px solid var(--sam);border-radius:14px;padding:16px;margin-top:24px}
+.pricing-guarantee-icon{width:36px;height:36px;background:var(--sa);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pricing-guarantee-text{font-size:13px;color:var(--sa);line-height:1.55;font-weight:500}
+@media(max-width:768px){.pricing-inner{grid-template-columns:1fr;gap:40px}}
+
+/* FAQ */
+.faq{padding:100px 0}
+.faq-grid{display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start}
+.faq-item{border-bottom:1px solid var(--bd)}
+.faq-item:first-child{border-top:1px solid var(--bd)}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:18px 0;cursor:pointer;font-size:15px;font-weight:500;color:var(--tx);gap:16px;user-select:none;transition:color .15s}
+.faq-q:hover{color:var(--te)}
+.faq-arrow{width:20px;height:20px;flex-shrink:0;color:var(--tx3);transition:transform .25s}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--te)}
+.faq-a{font-size:14px;color:var(--tx2);line-height:1.75;padding-bottom:18px;display:none}
+.faq-item.open .faq-a{display:block}
+@media(max-width:768px){.faq-grid{grid-template-columns:1fr;gap:36px}}
+
+/* CTA */
+.cta-section{padding:110px 0}
+.cta-box{background:var(--te);border-radius:28px;padding:72px 64px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06)}
+.cta-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.cta-h{font-family:'Lora',serif;font-size:clamp(22px,3vw,36px);font-weight:500;color:#fff;letter-spacing:-.4px;line-height:1.2;margin-bottom:12px}
+.cta-p{font-size:15px;color:rgba(255,255,255,.72);line-height:1.6}
+.cta-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.btn-cta-wh{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--te);border:none;border-radius:14px;padding:15px 28px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:background .15s,transform .12s}
+.btn-cta-wh:hover{background:var(--cr);transform:translateY(-2px)}
+.cta-note{font-size:12px;color:rgba(255,255,255,.5)}
+@media(max-width:768px){.cta-box{grid-template-columns:1fr;padding:40px 28px}}
+
+/* FOOTER */
+footer{background:var(--tx);padding:56px 0 36px}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+.footer-logo-name{font-family:'Lora',serif;font-size:19px;color:#fff;margin-top:10px}
+.footer-desc{font-size:13px;color:rgba(255,255,255,.4);line-height:1.65;margin-top:10px;max-width:260px}
+.footer-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.3);margin-bottom:14px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-col li a,.footer-col li button{font-size:13px;color:rgba(255,255,255,.55);transition:color .15s;background:none;border:none;padding:0;cursor:pointer;font-family:'Outfit',sans-serif;text-align:left}
+.footer-col li a:hover,.footer-col li button:hover{color:var(--tem)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.28)}
+@media(max-width:640px){.footer-inner{grid-template-columns:1fr;gap:28px}}
+
+/* LEGAL MODALS */
+.lmodal{display:none;position:fixed;inset:0;background:rgba(45,26,14,.5);z-index:999;align-items:flex-end;overflow:hidden}
+.lmodal.on{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.lmodal-box{background:var(--wh);border-radius:24px 24px 0 0;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .22s cubic-bezier(.16,1,.3,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.lmodal-inner{max-width:780px;margin:0 auto;padding:32px 28px 48px}
+.lmodal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;position:sticky;top:0;background:var(--wh);padding:20px 0 16px;border-bottom:1px solid var(--bd)}
+.lmodal-title{font-family:'Lora',serif;font-size:22px;color:var(--tx);font-weight:500}
+.lmodal-close{background:var(--cr3);border:none;border-radius:50%;width:34px;height:34px;font-size:20px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;flex-shrink:0}
+.legal-section{margin-bottom:28px}
+.legal-h2{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.legal-h3{font-size:13px;font-weight:600;color:var(--tx);margin:12px 0 6px}
+.legal-p{font-size:13px;color:var(--tx2);line-height:1.75;margin-bottom:8px}
+.legal-ul{font-size:13px;color:var(--tx2);line-height:1.75;padding-left:20px;margin-bottom:8px}
+.legal-ul li{margin-bottom:4px}
+.legal-tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--te);background:var(--tel);border-radius:4px;padding:2px 8px;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.582 2 2 5.582 2 10s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8z" stroke="white" stroke-width="1.5"/><path d="M10 6v4l2.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <span class="logo-name">AssistMat</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+      <li><a href="#comment">Comment ça marche</a></li>
+      <li><a href="#tarifs">Tarifs</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="assistmat-v2.html" class="nav-cta">Essayer gratuitement</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container" style="grid-column:1;padding-right:0">
+    <div class="hero-text">
+      <div class="hero-tag"><span class="hero-tag-dot"></span>14 jours d'essai gratuit — sans carte bancaire</div>
+      <h1>Vos fiches de paie, <em>sans le calcul.</em></h1>
+      <p class="hero-desc">AssistMat calcule automatiquement vos bulletins de salaire, suit les présences de chaque enfant et prépare votre déclaration fiscale en quelques secondes.</p>
+      <div class="hero-actions">
+        <a href="assistmat-v2.html" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M5 9l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Commencer l'essai gratuit
+        </a>
+        <a href="#fonctionnalites" class="btn-secondary">Voir les fonctionnalités</a>
+      </div>
+      <div class="hero-note">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-5V9m0-2v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Données stockées sur votre appareil. Aucune information envoyée.
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="float-card fc-left">
+      <div class="fc-label">Base mensuelle</div>
+      <div class="fc-value">1 638 <span style="font-size:13px;font-weight:500;color:var(--tx3)">€</span></div>
+      <div class="fc-sub">mensualisation</div>
+      <span class="fc-pill" style="background:var(--sal);color:var(--sa)">Héloïse D.</span>
+    </div>
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+      <div class="phone-hdr">
+        <div class="phone-hdr-title">AssistMat</div>
+        <div class="phone-hdr-sub">samedi 10 mai 2026</div>
+      </div>
+      <div class="phone-body">
+        <div class="phone-today">
+          <div class="phone-today-label">Aujourd'hui</div>
+          <div class="phone-today-row"><span>Héloïse D.</span><span class="phone-badge pb-sa">7h</span></div>
+          <div class="phone-today-row"><span>Raphaël M.</span><span class="phone-badge pb-gr">Non saisi</span></div>
+        </div>
+        <div class="phone-grid">
+          <div class="phone-stat te"><div class="phone-stat-l">Base</div><div class="phone-stat-v">2 861 €</div></div>
+          <div class="phone-stat"><div class="phone-stat-l">Présences</div><div class="phone-stat-v">94h</div></div>
+          <div class="phone-stat sa"><div class="phone-stat-l">Enfants</div><div class="phone-stat-v">2</div></div>
+          <div class="phone-stat"><div class="phone-stat-l">Mois</div><div class="phone-stat-v">Mai</div></div>
+        </div>
+        <div class="phone-card"><div class="phone-av pav-te">HD</div><div><div class="phone-card-name">Héloïse Deschamps</div><div class="phone-card-sub">Base 1 638 €/mois</div></div></div>
+        <div class="phone-card"><div class="phone-av pav-sa">RM</div><div><div class="phone-card-name">Raphaël Meunier</div><div class="phone-card-sub">Base 1 223 €/mois</div></div></div>
+      </div>
+      <div class="phone-nav">
+        <div class="phone-ni on"><div class="phone-ni-dot"></div>Accueil</div>
+        <div class="phone-ni"><div class="phone-ni-dot"></div>Enfants</div>
+        <div class="phone-ni"><div class="phone-ni-dot"></div>Présences</div>
+        <div class="phone-ni"><div class="phone-ni-dot"></div>Bulletin</div>
+        <div class="phone-ni"><div class="phone-ni-dot"></div>Fiscal</div>
+      </div>
+    </div>
+    <div class="float-card fc-right">
+      <div class="fc-label">Abattement fiscal</div>
+      <div class="fc-value">4 217 <span style="font-size:13px;font-weight:500;color:var(--tx3)">€</span></div>
+      <div class="fc-sub">non imposé · case 1GA</div>
+      <span class="fc-pill" style="background:var(--sal);color:var(--sa)">62% économisé</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-item reveal"><div class="stat-num">14 j</div><div class="stat-label">D'essai gratuit, sans engagement</div></div>
+      <div class="stat-item reveal reveal-delay-1"><div class="stat-num">5 min</div><div class="stat-label">Pour générer un bulletin complet</div></div>
+      <div class="stat-item reveal reveal-delay-2"><div class="stat-num">0</div><div class="stat-label">Donnée envoyée à un serveur</div></div>
+      <div class="stat-item reveal reveal-delay-3"><div class="stat-num">2025</div><div class="stat-label">Barème kilométrique et SMIC à jour</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="fonctionnalites">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Fonctionnalités</div>
+      <h2 class="section-title">Tout ce qu'il faut, rien de superflu.</h2>
+      <p class="section-desc">Conçu pour les assistantes maternelles agréées — chaque fonctionnalité répond à une obligation concrète du métier.</p>
+    </div>
+    <div class="bento">
+      <div class="bento-card wide warm reveal">
+        <div class="bento-icon bi-te"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8"/><path d="M7 8h10M7 12h7M7 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+          <div>
+            <div class="bento-label">Bulletin de salaire</div>
+            <div class="bento-h">Généré en un clic, prêt à imprimer.</div>
+            <div class="bento-p">Salaire mensuel, indemnités, congés payés, heures complémentaires, frais kilométriques — tout calculé selon le contrat de chaque enfant.</div>
+          </div>
+          <div class="mini-bul">
+            <div class="mini-bul-row"><span class="mini-bul-label">Base mensuelle</span><span class="mini-bul-val">1 638,00 €</span></div>
+            <div class="mini-bul-row"><span class="mini-bul-label">Entretien</span><span class="mini-bul-val">63,00 €</span></div>
+            <div class="mini-bul-row"><span class="mini-bul-label">Repas</span><span class="mini-bul-val">73,50 €</span></div>
+            <div class="mini-bul-row"><span class="mini-bul-label">Kilométriques</span><span class="mini-bul-val sa">34,24 €</span></div>
+            <div class="mini-bul-total"><span>Total à percevoir</span><span>1 808,74 €</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="bento-card sage reveal reveal-delay-1">
+        <div class="bento-icon bi-sa"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M7 3v4M17 3v4M3 11h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="bento-label">Présences</div>
+        <div class="bento-h">Saisie rapide, mois par mois.</div>
+        <div class="bento-p">Heures travaillées, absences, heures complémentaires. Les totaux se calculent en temps réel.</div>
+        <div class="mini-cal">
+          <div class="cal-day header">Lu</div><div class="cal-day header">Ma</div><div class="cal-day header">Me</div><div class="cal-day header">Je</div><div class="cal-day header">Ve</div><div class="cal-day header">Sa</div><div class="cal-day header">Di</div>
+          <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day worked">1</div><div class="cal-day worked">2</div><div class="cal-day worked">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+          <div class="cal-day worked">6</div><div class="cal-day worked">7</div><div class="cal-day worked">8</div><div class="cal-day absent">9</div><div class="cal-day worked">10</div><div class="cal-day">11</div><div class="cal-day">12</div>
+          <div class="cal-day worked">13</div><div class="cal-day worked">14</div><div class="cal-day today">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
+        </div>
+      </div>
+      <div class="bento-card gold reveal reveal-delay-2">
+        <div class="bento-icon bi-go"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 18L8 12l4 5 4-8 4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="bento-label">Abattement fiscal</div>
+        <div class="bento-h">Déclaration préparée.</div>
+        <div class="bento-p">Calcul automatique de l'abattement spécifique. Cases 1GA et 1AJ prêtes à reporter.</div>
+        <div class="mini-tax">
+          <div class="tax-bar-wrap"><div class="tax-bar-label"><span>Revenus bruts</span><span>6 841 €</span></div><div class="tax-bar-bg"><div class="tax-bar-fill" style="width:100%"></div></div></div>
+          <div class="tax-bar-wrap"><div class="tax-bar-label"><span>Abattement (1GA)</span><span style="color:var(--sa)">−4 217 €</span></div><div class="tax-bar-bg"><div class="tax-bar-fill" style="width:62%"></div></div></div>
+          <div class="tax-bar-wrap"><div class="tax-bar-label"><span>À déclarer (1AJ)</span><span>2 624 €</span></div><div class="tax-bar-bg"><div class="tax-bar-fill" style="width:38%;background:linear-gradient(90deg,var(--go),var(--gom))"></div></div></div>
+        </div>
+      </div>
+      <div class="bento-card reveal reveal-delay-1">
+        <div class="bento-icon bi-te"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="bento-label">Profils enfants</div>
+        <div class="bento-h">Un contrat, un profil.</div>
+        <div class="bento-p">Tarifs individuels, horaires, coordonnées parents. Chaque contrat a ses propres réglages.</div>
+      </div>
+      <div class="bento-card accent reveal reveal-delay-2">
+        <div class="bento-icon bi-wh"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M8 11l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="bento-label">Export</div>
+        <div class="bento-h">PDF prêt à remettre aux parents.</div>
+        <div class="bento-p">Bulletin mis en page, prêt à imprimer ou partager. Sauvegarde JSON pour ne rien perdre.</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-3">
+        <div class="bento-icon bi-lv"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <div class="bento-label">Congés payés</div>
+        <div class="bento-h">Suivi automatique du solde.</div>
+        <div class="bento-p">Acquisition, jours pris et solde à reporter portés sur chaque bulletin.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="comment">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Comment ça marche</div>
+      <h2 class="section-title">Opérationnel en moins de dix minutes.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="step-h">Créez le profil de chaque enfant accueilli</div>
+        <p class="step-p">Renseignez les horaires du contrat, les tarifs — pré-remplis depuis vos réglages globaux — et les coordonnées des parents. Situation standard ou handicap/ALD : un simple basculement adapte le calcul de l'abattement. Cette saisie ne se fait qu'une seule fois par contrat.</p>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <div class="step-h">Saisissez les présences chaque mois</div>
+        <p class="step-p">Remplissez les heures jour par jour, marquez les absences en un tap, ajoutez les heures complémentaires en bas de page. Les totaux — heures, jours, estimation de salaire — se mettent à jour en temps réel. Sauvegardez en un clic.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <div class="step-h">Générez le bulletin et la déclaration fiscale</div>
+        <p class="step-p">Le bulletin de salaire est calculé automatiquement à partir des présences et des tarifs du contrat. Exportez-le en PDF pour le remettre aux parents. En fin d'année, le récapitulatif fiscal vous donne les montants exacts à reporter dans votre déclaration de revenus (cases 1GA et 1AJ).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Témoignages</div>
+      <h2 class="section-title">Ce qu'en disent les assistantes maternelles.</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi reveal">
+        <div class="testi-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testi-quote">« Avant, je passais deux heures en fin de mois à tout recalculer à la main. Maintenant je génère le bulletin en cinq minutes — et je suis certaine qu'il est juste. L'abattement fiscal m'a sauvé la mise à la déclaration : je n'avais aucune idée que je pouvais déduire autant. »</p>
+        <div class="testi-author"><div class="testi-av" style="background:var(--tel);color:var(--te)">MD</div><div><div class="testi-name">Martine Delvaux</div><div class="testi-role">Assistante maternelle agréée · 3 enfants accueillis</div></div></div>
+      </div>
+      <div class="testi reveal reveal-delay-1">
+        <div class="testi-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testi-quote">« Simple, rapide, et aucune donnée envoyée sur internet — c'est exactement ce que je cherchais. Je l'ai ajouté à l'écran d'accueil de mon téléphone, c'est devenu un réflexe en fin de semaine. »</p>
+        <div class="testi-author"><div class="testi-av" style="background:var(--sal);color:var(--sa)">SB</div><div><div class="testi-name">Sophie Blanchard</div><div class="testi-role">Assistante maternelle · Isère</div></div></div>
+      </div>
+      <div class="testi reveal reveal-delay-2">
+        <div class="testi-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testi-quote">« Les frais kilométriques et le suivi des congés payés, enfin automatiques. J'avais peur que ce soit compliqué à paramétrer, mais j'ai tout configuré en dix minutes. »</p>
+        <div class="testi-author"><div class="testi-av" style="background:var(--lvl);color:var(--lv)">NF</div><div><div class="testi-name">Nathalie Ferrand</div><div class="testi-role">Assistante maternelle · 2 enfants accueillis</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="tarifs">
+  <div class="container">
+    <div class="pricing-inner">
+      <div class="reveal">
+        <div class="section-tag">Tarifs</div>
+        <h2 class="pricing-text" style="font-family:'Lora',serif;font-size:clamp(26px,3vw,38px);font-weight:500;color:var(--tx);letter-spacing:-.4px;margin-bottom:20px;line-height:1.2">Un abonnement simple, sans surprise.</h2>
+        <p style="font-size:15px;color:var(--tx2);line-height:1.7;margin-bottom:16px">AssistMat est accessible après 14 jours d'essai entièrement gratuit. Aucune carte bancaire requise pour commencer.</p>
+        <p style="font-size:15px;color:var(--tx2);line-height:1.7;margin-bottom:16px">L'abonnement couvre un usage illimité : autant d'enfants, de bulletins et de mois d'historique que vous le souhaitez.</p>
+        <div class="pricing-guarantee">
+          <div class="pricing-guarantee-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div class="pricing-guarantee-text">Résiliation à tout moment depuis les réglages de l'app. Aucun engagement de durée.</div>
+        </div>
+      </div>
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="pricing-badge">
+          <svg width="10" height="10" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.582 2 2 5.582 2 10s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8z" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          14 jours d'essai gratuit
+        </div>
+        <div class="pricing-price">
+          <span class="pricing-amount">2,99 €</span>
+          <span class="pricing-period">/mois</span>
+        </div>
+        <div class="pricing-trial">Puis <strong>2,99 €/mois</strong> — résiliation à tout moment</div>
+        <div class="pricing-features">
+          <div class="pricing-feature">Bulletins de salaire illimités</div>
+          <div class="pricing-feature">Suivi des présences — enfants illimités</div>
+          <div class="pricing-feature">Calcul automatique de l'abattement fiscal</div>
+          <div class="pricing-feature">Export PDF & sauvegarde JSON</div>
+          <div class="pricing-feature">Frais kilométriques et congés payés</div>
+          <div class="pricing-feature">Données stockées localement sur votre appareil</div>
+        </div>
+        <a href="assistmat-v2.html" class="pricing-cta">Commencer l'essai gratuit</a>
+        <div class="pricing-note">Sans carte bancaire · Résiliation libre</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <div class="section-tag">FAQ</div>
+        <h2 class="section-title" style="margin-bottom:0">Questions fréquentes.</h2>
+      </div>
+      <div class="faq-list reveal reveal-delay-1">
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggleFaq(this)">L'essai gratuit nécessite-t-il une carte bancaire ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Non. Les 14 premiers jours sont entièrement gratuits sans aucune information de paiement requise. À l'issue de l'essai, un abonnement à 2,99 €/mois est nécessaire pour continuer à utiliser l'application.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Comment fonctionne le paiement ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Le paiement est traité par Stripe, plateforme sécurisée utilisée par des millions d'entreprises. Après le paiement, vous recevez un code d'activation par email à saisir directement dans l'app, dans les Réglages.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Comment résilier mon abonnement ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">La résiliation se fait à tout moment depuis les Réglages de l'app, rubrique "Abonnement". Il n'y a aucun engagement de durée et aucun frais de résiliation.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Mes données sont-elles sécurisées ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Toutes les données (enfants, présences, bulletins) sont stockées uniquement sur votre appareil via le stockage local du navigateur. Aucune information n'est jamais envoyée à un serveur. Vous pouvez exporter une sauvegarde JSON depuis les Réglages.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Le calcul de l'abattement est-il conforme ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Le calcul applique la règle légale : 3 SMIC par jour de garde (4 SMIC si l'enfant est reconnu handicapé ou ALD), dans la limite des revenus déclarés. Le taux SMIC est paramétrable dans les Réglages. Il est conseillé de vérifier avec votre organisme de retraite ou conseiller fiscal pour votre situation particulière.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Combien d'enfants puis-je gérer ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Il n'y a pas de limite. Chaque enfant a son propre profil avec ses tarifs, ses horaires et son historique complet. Le récapitulatif fiscal peut agréger tous les enfants ou filtrer par profil.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Puis-je utiliser AssistMat sur téléphone ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Oui, l'app est conçue en priorité pour mobile. Sur iOS, ajoutez-la à l'écran d'accueil depuis Safari (bouton Partager › Ajouter à l'écran d'accueil). Sur Android, Chrome propose une option similaire. Elle se comporte comme une application native.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Si je change de téléphone, je perds tout ?<svg class="faq-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="faq-a">Non, à condition d'exporter une sauvegarde JSON depuis les Réglages avant de changer d'appareil. Importez ce fichier sur le nouveau téléphone pour retrouver tous vos profils et historiques instantanément.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <div>
+        <div class="cta-tag">Commencer maintenant</div>
+        <h2 class="cta-h">Votre prochain bulletin en cinq minutes.</h2>
+        <p class="cta-p">Aucune installation. Ouvrez l'app dans votre navigateur et commencez à saisir dès aujourd'hui.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="assistmat-v2.html" class="btn-cta-wh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Démarrer l'essai gratuit — 14 jours
+        </a>
+        <span class="cta-note">Sans carte bancaire · 2,99 €/mois après l'essai</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="logo"><div class="logo-mark"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.582 2 2 5.582 2 10s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8z" stroke="white" stroke-width="1.5"/><path d="M10 6v4l2.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+        <div class="footer-logo-name">AssistMat</div>
+        <p class="footer-desc">Gestion administrative simplifiée pour les assistantes maternelles agréées. Données locales, aucun serveur.</p>
+      </div>
+      <div class="footer-col">
+        <h4>App</h4>
+        <ul>
+          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+          <li><a href="#comment">Comment ça marche</a></li>
+          <li><a href="#tarifs">Tarifs</a></li>
+          <li><a href="assistmat-v2.html">Ouvrir l'app</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><button onclick="openLegal('cgu')">Conditions d'utilisation</button></li>
+          <li><button onclick="openLegal('confidentialite')">Confidentialité</button></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><button onclick="openLegal('mentions')">Mentions légales</button></li>
+          <li><button onclick="openLegal('cgu')">CGU</button></li>
+          <li><button onclick="openLegal('confidentialite')">RGPD</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 AssistMat — Outil indépendant pour assistantes maternelles</span>
+      <span class="footer-copy">SMIC 11,88 €/h · Barème km 2025</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL MENTIONS LÉGALES -->
+<div class="lmodal" id="modal-mentions" onclick="closeLegal(event,'mentions')">
+  <div class="lmodal-box">
+    <div class="lmodal-inner">
+      <div class="lmodal-header">
+        <span class="lmodal-title">Mentions légales</span>
+        <button class="lmodal-close" onclick="closeLegalBtn('mentions')">&#215;</button>
+      </div>
+      <div class="legal-tag">Conformément à la loi n° 2004-575 du 21 juin 2004</div>
+      <div class="legal-section">
+        <div class="legal-h2">1. Éditeur du site</div>
+        <p class="legal-p">Le site AssistMat (ci-après « le Site ») est édité par :</p>
+        <p class="legal-p"><strong>[Nom / Raison sociale]</strong><br>[Adresse postale]<br>[Code postal, Ville]<br>Email : [contact@example.com]<br>Directeur de la publication : [Nom du responsable]</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">2. Hébergement</div>
+        <p class="legal-p">L'application AssistMat est une application web fonctionnant entièrement côté client (navigateur). Aucune donnée utilisateur n'est stockée sur un serveur distant. Les données saisies sont conservées localement sur l'appareil de l'utilisateur via le mécanisme <em>localStorage</em> du navigateur.</p>
+        <p class="legal-p">Le fichier de l'application peut être hébergé par tout prestataire choisi par l'éditeur.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">3. Propriété intellectuelle</div>
+        <p class="legal-p">L'ensemble des éléments constituant le Site (structure, textes, graphismes, logos, icônes, images, sons) est la propriété exclusive de l'éditeur ou de ses partenaires, et est protégé par les lois françaises et internationales relatives à la propriété intellectuelle.</p>
+        <p class="legal-p">Toute reproduction, représentation, modification, publication, adaptation ou exploitation de tout ou partie du Site, par quelque moyen que ce soit, est interdite sans autorisation préalable écrite de l'éditeur, sous peine des sanctions prévues aux articles L.335-2 et suivants du Code de la propriété intellectuelle.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">4. Limitation de responsabilité</div>
+        <p class="legal-p">Les informations et calculs fournis par AssistMat le sont à titre indicatif. L'éditeur s'efforce d'assurer l'exactitude des calculs (abattement fiscal, bulletins de salaire) mais ne peut être tenu responsable d'éventuelles erreurs ou d'un usage non conforme à la réglementation en vigueur.</p>
+        <p class="legal-p">Il appartient à l'utilisateur de vérifier les montants produits par l'application auprès des organismes compétents (URSSAF, impôts, RAM).</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">5. Droit applicable et juridiction</div>
+        <p class="legal-p">Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CGU -->
+<div class="lmodal" id="modal-cgu" onclick="closeLegal(event,'cgu')">
+  <div class="lmodal-box">
+    <div class="lmodal-inner">
+      <div class="lmodal-header">
+        <span class="lmodal-title">Conditions Générales d'Utilisation</span>
+        <button class="lmodal-close" onclick="closeLegalBtn('cgu')">&#215;</button>
+      </div>
+      <div class="legal-tag">En vigueur au 1er janvier 2026</div>
+      <div class="legal-section">
+        <div class="legal-h2">1. Objet</div>
+        <p class="legal-p">Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de l'application web AssistMat (ci-après « le Service »), outil de gestion administrative destiné aux assistantes maternelles agréées.</p>
+        <p class="legal-p">En accédant au Service, l'utilisateur accepte sans réserve les présentes CGU.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">2. Description du Service</div>
+        <p class="legal-p">AssistMat est une application web permettant de :</p>
+        <ul class="legal-ul">
+          <li>Créer et gérer des profils d'enfants accueillis</li>
+          <li>Enregistrer les heures de présence mensuelles</li>
+          <li>Générer des bulletins de salaire selon les tarifs du contrat</li>
+          <li>Calculer l'abattement fiscal spécifique aux assistantes maternelles</li>
+          <li>Exporter les bulletins au format PDF et sauvegarder les données en JSON</li>
+        </ul>
+        <p class="legal-p">Le Service fonctionne intégralement dans le navigateur de l'utilisateur. Aucune donnée n'est transmise à des serveurs tiers.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">3. Accès au Service — Période d'essai</div>
+        <p class="legal-p">L'accès au Service est soumis à une période d'essai gratuite de <strong>14 jours</strong> à compter de la première utilisation, sans inscription ni carte bancaire. À l'issue de cette période, l'accès est conditionné à la souscription d'un abonnement.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">4. Abonnement et tarification</div>
+        <div class="legal-h3">4.1 Prix</div>
+        <p class="legal-p">L'abonnement est proposé au tarif de <strong>2,99 € TTC par mois</strong>. Ce prix peut être modifié par l'éditeur avec un préavis de 30 jours communiqué à l'utilisateur.</p>
+        <div class="legal-h3">4.2 Modalités de paiement</div>
+        <p class="legal-p">Le paiement est effectué via la plateforme sécurisée Stripe. Après validation du paiement, l'utilisateur reçoit un code d'activation par email, à saisir dans les Réglages de l'application.</p>
+        <div class="legal-h3">4.3 Durée et renouvellement</div>
+        <p class="legal-p">L'abonnement est à durée indéterminée, renouvelé mensuellement. Il peut être résilié à tout moment depuis les Réglages de l'application. La résiliation prend effet à la fin du mois en cours.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">5. Responsabilités de l'utilisateur</div>
+        <p class="legal-p">L'utilisateur s'engage à utiliser le Service conformément à sa destination et à la réglementation applicable. Les calculs fournis sont indicatifs ; il appartient à l'utilisateur de les vérifier auprès des organismes compétents.</p>
+        <p class="legal-p">L'utilisateur est seul responsable de la sauvegarde de ses données. L'éditeur recommande d'exporter régulièrement une sauvegarde JSON depuis les Réglages.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">6. Propriété intellectuelle</div>
+        <p class="legal-p">Le Service, ses composants et son code source sont la propriété exclusive de l'éditeur. L'abonnement confère à l'utilisateur un droit d'usage personnel, non exclusif et non cessible.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">7. Limitation de garantie</div>
+        <p class="legal-p">L'éditeur s'efforce de maintenir le Service disponible et à jour mais ne garantit pas une disponibilité ininterrompue. En cas d'indisponibilité, l'éditeur ne saurait être tenu responsable des préjudices directs ou indirects en résultant.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">8. Modification des CGU</div>
+        <p class="legal-p">L'éditeur se réserve le droit de modifier les présentes CGU à tout moment. Les modifications entrent en vigueur à leur publication. La poursuite de l'utilisation du Service vaut acceptation des nouvelles CGU.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">9. Loi applicable</div>
+        <p class="legal-p">Les présentes CGU sont soumises au droit français. Tout litige relatif à leur interprétation ou leur exécution sera de la compétence exclusive des tribunaux du ressort du siège social de l'éditeur.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIDENTIALITÉ -->
+<div class="lmodal" id="modal-confidentialite" onclick="closeLegal(event,'confidentialite')">
+  <div class="lmodal-box">
+    <div class="lmodal-inner">
+      <div class="lmodal-header">
+        <span class="lmodal-title">Politique de confidentialité</span>
+        <button class="lmodal-close" onclick="closeLegalBtn('confidentialite')">&#215;</button>
+      </div>
+      <div class="legal-tag">Conforme au RGPD — Règlement (UE) 2016/679</div>
+      <div class="legal-section">
+        <div class="legal-h2">1. Responsable du traitement</div>
+        <p class="legal-p">[Nom / Raison sociale de l'éditeur]<br>[Adresse]<br>Contact : [email de contact]</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">2. Données collectées et traitées</div>
+        <div class="legal-h3">2.1 Données saisies dans l'application</div>
+        <p class="legal-p">L'application traite localement sur votre appareil les données que vous saisissez : prénoms et noms des enfants accueillis, horaires et tarifs des contrats, heures de présence, coordonnées des parents. <strong>Ces données ne quittent jamais votre appareil.</strong> Elles sont conservées dans le <em>localStorage</em> de votre navigateur.</p>
+        <div class="legal-h3">2.2 Données de paiement</div>
+        <p class="legal-p">Le paiement de l'abonnement est traité par Stripe, Inc. Les données bancaires sont collectées et traitées exclusivement par Stripe et ne transitent pas par nos serveurs. Consultez la politique de confidentialité de Stripe sur stripe.com.</p>
+        <div class="legal-h3">2.3 Données techniques minimales</div>
+        <p class="legal-p">La visite du site de présentation peut générer des logs serveur standards (adresse IP, navigateur, date et heure de visite) conservés 12 mois maximum à des fins de sécurité. Aucun traçage publicitaire n'est effectué.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">3. Finalités du traitement</div>
+        <ul class="legal-ul">
+          <li>Fonctionnement de l'application (calcul des bulletins, abattement fiscal)</li>
+          <li>Gestion de l'abonnement et envoi du code d'activation</li>
+          <li>Sécurité et intégrité du service</li>
+        </ul>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">4. Base légale</div>
+        <p class="legal-p">Le traitement repose sur l'exécution du contrat d'abonnement (art. 6.1.b RGPD) et l'intérêt légitime de l'éditeur à assurer la sécurité du service (art. 6.1.f RGPD).</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">5. Conservation des données</div>
+        <p class="legal-p">Les données applicatives sont stockées sur votre appareil et conservées jusqu'à suppression volontaire par l'utilisateur (effacement du <em>localStorage</em> ou désinstallation). L'éditeur n'a pas accès à ces données.</p>
+        <p class="legal-p">Les données de contact liées à l'abonnement (adresse email) sont conservées pendant la durée de l'abonnement et 3 ans après résiliation à des fins comptables.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">6. Vos droits (RGPD)</div>
+        <p class="legal-p">Conformément au RGPD, vous disposez des droits suivants sur les données vous concernant :</p>
+        <ul class="legal-ul">
+          <li><strong>Droit d'accès</strong> — obtenir une copie de vos données</li>
+          <li><strong>Droit de rectification</strong> — corriger des données inexactes</li>
+          <li><strong>Droit à l'effacement</strong> — demander la suppression de vos données</li>
+          <li><strong>Droit à la portabilité</strong> — recevoir vos données dans un format structuré (disponible via l'export JSON de l'app)</li>
+          <li><strong>Droit d'opposition</strong> — vous opposer à certains traitements</li>
+        </ul>
+        <p class="legal-p">Pour exercer vos droits, contactez-nous à : <strong>[email de contact]</strong>. Vous disposez également du droit d'introduire une réclamation auprès de la CNIL (cnil.fr).</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">7. Cookies</div>
+        <p class="legal-p">Le site de présentation n'utilise pas de cookies à des fins publicitaires ou de traçage. Le <em>localStorage</em> de l'application n'est pas un cookie et ne peut pas être lu par des tiers.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">8. Transferts hors UE</div>
+        <p class="legal-p">Le traitement des paiements par Stripe peut impliquer des transferts de données vers les États-Unis. Ces transferts sont encadrés par les clauses contractuelles types de la Commission européenne.</p>
+      </div>
+      <div class="legal-section">
+        <div class="legal-h2">9. Modifications</div>
+        <p class="legal-p">La présente politique peut être mise à jour. La version en vigueur est celle publiée sur ce site. En cas de modification substantielle, les utilisateurs abonnés en seront informés par email.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scroll reveal
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+
+// FAQ
+function toggleFaq(btn){
+  var item=btn.parentElement;
+  var isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+  if(!isOpen)item.classList.add('open');
+}
+
+// Nav shadow
+window.addEventListener('scroll',function(){
+  document.getElementById('main-nav').style.boxShadow=window.scrollY>8?'0 2px 20px rgba(45,26,14,.08)':'none';
+},{passive:true});
+
+// Tax bar animation
+var taxObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.tax-bar-fill').forEach(function(bar){
+        var w=bar.style.width;bar.style.width='0';
+        requestAnimationFrame(function(){setTimeout(function(){bar.style.width=w;},80);});
+      });taxObs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.mini-tax').forEach(function(el){taxObs.observe(el);});
+
+// Legal modals
+function openLegal(name){
+  document.getElementById('modal-'+name).classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeLegal(e,name){
+  if(e.target===document.getElementById('modal-'+name)){
+    document.getElementById('modal-'+name).classList.remove('on');
+    document.body.style.overflow='';
+  }
+}
+function closeLegalBtn(name){
+  document.getElementById('modal-'+name).classList.remove('on');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>

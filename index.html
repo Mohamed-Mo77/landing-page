@@ -159,7 +159,8 @@ nav.scrolled .nav-burger span{background:var(--tx);}
 /* PLATS */
 #plats{padding:100px 0;background:var(--bg3);}
 .plats-header{text-align:center;margin-bottom:52px}
-.plats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.plats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+@media(min-width:900px){.plats-grid{grid-template-columns:repeat(4,1fr);}}
 .plat-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--bg2);aspect-ratio:4/3;cursor:pointer;}
 .plat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;}
 .plat-card:hover img{transform:scale(1.06)}
@@ -627,34 +628,20 @@ nav.scrolled .nav-burger span{background:var(--tx);}
     </div>
     <div class="plats-grid reveal">
       <div class="plat-card">
-        <img src="./image%3Aplat1.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Le Foie Gras Maison</div><div class="plat-caption-desc">Mi-cuit, chutney de saison</div></div>
+        <img src="./Plat.jpg" alt="Plat du moment" loading="lazy">
+        <div class="plat-caption"><div class="plat-caption-name">Plat du Moment</div><div class="plat-caption-desc">Selon le marché et la saison</div></div>
       </div>
       <div class="plat-card">
-        <img src="./image%3Aplat2.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Filet Mignon</div><div class="plat-caption-desc">Cuisson douce, crème moutarde</div></div>
+        <img src="./Burger.jpg" alt="Burger du moment" loading="lazy">
+        <div class="plat-caption"><div class="plat-caption-name">Burger du Moment</div><div class="plat-caption-desc">Selon l'inspiration du chef</div></div>
       </div>
       <div class="plat-card">
-        <img src="./image%3Aplat3.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Dorade Sébaste</div><div class="plat-caption-desc">Polenta beurre et basilic</div></div>
+        <img src="./Dessert.jpg" alt="Dessert maison" loading="lazy">
+        <div class="plat-caption"><div class="plat-caption-name">Dessert Maison</div><div class="plat-caption-desc">Douceurs de notre chef pâtissier</div></div>
       </div>
       <div class="plat-card">
-        <img src="./image%3Aplat4.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Le Moelleux</div><div class="plat-caption-desc">Chocolat Valrhona, caramel beurre salé</div></div>
-      </div>
-      <div class="plat-card">
-        <img src="./image%3Aplat5.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Cookie Madame</div><div class="plat-caption-desc">Semi-cuit, à déguster à la cuillère</div></div>
-      </div>
-      <div class="plat-card">
-        <img src="./image%3Aplat6.jpg" alt="Plat du moment" loading="lazy"
-          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
-        <div class="plat-caption"><div class="plat-caption-name">Brioche Perdue</div><div class="plat-caption-desc">Caramel beurre salé, chantilly</div></div>
+        <img src="./Milshake.jpg" alt="Milkshake maison" loading="lazy">
+        <div class="plat-caption"><div class="plat-caption-name">Milkshake Maison</div><div class="plat-caption-desc">Préparé à la minute</div></div>
       </div>
     </div>
   </div>

@@ -156,6 +156,21 @@ nav.scrolled .nav-burger span{background:var(--tx);}
 .menu-highlight-name{font-size:15px;font-weight:600;color:var(--coral-dark);margin-bottom:4px;}
 .menu-highlight-price{font-size:20px;font-weight:700;color:var(--coral-dark)}
 
+/* PLATS */
+#plats{padding:100px 0;background:var(--bg3);}
+.plats-header{text-align:center;margin-bottom:52px}
+.plats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.plat-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--bg2);aspect-ratio:4/3;cursor:pointer;}
+.plat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;}
+.plat-card:hover img{transform:scale(1.06)}
+.plat-card.placeholder{display:flex;align-items:center;justify-content:center;border:2px dashed var(--border);color:var(--tx3);font-size:13px;font-style:italic;}
+.plat-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(30,46,33,.82));padding:36px 18px 14px;color:var(--wh);z-index:1;opacity:0;transition:opacity .3s ease;}
+.plat-card:hover .plat-caption{opacity:1;}
+.plat-caption-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;}
+.plat-caption-desc{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+@media(max-width:900px){.plats-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.plats-grid{grid-template-columns:1fr;}}
+
 /* RESERVATION */
 #reservation{padding:100px 0;background:linear-gradient(135deg,var(--green-dark) 0%,#2A4A30 50%,#1A3520 100%);position:relative;overflow:hidden;}
 #reservation::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 70% 30%,rgba(212,104,94,.1) 0%,transparent 60%);pointer-events:none;}
@@ -273,6 +288,7 @@ nav.scrolled .nav-burger span{background:var(--tx);}
       <li><a href="#galerie">Photos</a></li>
       <li><a href="#about">Le Restaurant</a></li>
       <li><a href="#menu">Menu</a></li>
+      <li><a href="#plats">Nos Plats</a></li>
       <li><a href="#reservation">Réservation</a></li>
       <li><a href="#avis">Avis</a></li>
       <li><a href="#localisation">Accès</a></li>
@@ -285,6 +301,7 @@ nav.scrolled .nav-burger span{background:var(--tx);}
   <a href="#galerie" onclick="closeMobile()">Photos</a>
   <a href="#about" onclick="closeMobile()">Le Restaurant</a>
   <a href="#menu" onclick="closeMobile()">Menu</a>
+  <a href="#plats" onclick="closeMobile()">Nos Plats</a>
   <a href="#reservation" onclick="closeMobile()">Réservation</a>
   <a href="#avis" onclick="closeMobile()">Avis</a>
   <a href="#localisation" onclick="closeMobile()">Accès</a>
@@ -597,6 +614,48 @@ nav.scrolled .nav-burger span{background:var(--tx);}
         </div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<section id="plats">
+  <div class="container">
+    <div class="plats-header reveal">
+      <div class="section-label">En Images</div>
+      <h2 class="section-title">Nos <em>Spécialités</em></h2>
+      <p class="section-text" style="margin:0 auto;text-align:center">Quelques-uns de nos plats phares, préparés avec passion chaque jour.</p>
+    </div>
+    <div class="plats-grid reveal">
+      <div class="plat-card">
+        <img src="./image%3Aplat1.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Le Foie Gras Maison</div><div class="plat-caption-desc">Mi-cuit, chutney de saison</div></div>
+      </div>
+      <div class="plat-card">
+        <img src="./image%3Aplat2.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Filet Mignon</div><div class="plat-caption-desc">Cuisson douce, crème moutarde</div></div>
+      </div>
+      <div class="plat-card">
+        <img src="./image%3Aplat3.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Dorade Sébaste</div><div class="plat-caption-desc">Polenta beurre et basilic</div></div>
+      </div>
+      <div class="plat-card">
+        <img src="./image%3Aplat4.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Le Moelleux</div><div class="plat-caption-desc">Chocolat Valrhona, caramel beurre salé</div></div>
+      </div>
+      <div class="plat-card">
+        <img src="./image%3Aplat5.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Cookie Madame</div><div class="plat-caption-desc">Semi-cuit, à déguster à la cuillère</div></div>
+      </div>
+      <div class="plat-card">
+        <img src="./image%3Aplat6.jpg" alt="Plat du moment" loading="lazy"
+          onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.textContent='Photo bientôt disponible'">
+        <div class="plat-caption"><div class="plat-caption-name">Brioche Perdue</div><div class="plat-caption-desc">Caramel beurre salé, chantilly</div></div>
+      </div>
     </div>
   </div>
 </section>
